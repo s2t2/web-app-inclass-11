@@ -34,4 +34,11 @@ def create_app():
         ]
         return render_template("books.html", message="Here's some books", books=books)
 
+    @app.route("/books/new")
+    def new_book():
+        return render_template("new_book.html")
+
+
+
+
     return app
