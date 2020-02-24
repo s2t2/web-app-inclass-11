@@ -32,6 +32,6 @@ def create_app():
             {"id": 2, "title": "Book 2"},
             {"id": 3, "title": "Book 3"},
         ]
-        return render_template("books.html")
+        return render_template("books.html", message="Here's some books", books=books)
 
     return app

@@ -1,3 +1,28 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Books Page</title>
+</head>
+<body>
 
-Hey here are some books.
+    <h1>Welcome to the Books Page</h1>
+
+    <p>{{ message }}</p>
+
+    {% if books %}
+    <ul>
+    {% for book in books %}
+        <li>{{ book["title"] }}</li>
+    {% endfor %}
+    </ul>
+
+    {% else %}
+        <p>Books not found.</p>
+    {% endif %}
+
+</body>
+</html>
