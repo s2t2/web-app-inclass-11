@@ -1,7 +1,7 @@
 
 # app.py
 
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, request
 
 def create_app():
 
@@ -37,6 +37,19 @@ def create_app():
     @app.route("/books/new")
     def new_book():
         return render_template("new_book.html")
+
+    @app.route("/books/create", methods=["POST"])
+    def create_book():
+        print("FORM DATA:", dict(request.form))
+        # todo: store in database
+        return jsonify({
+            "message": "BOOK CREATED OK (TODO)",
+            "book": dict(request.form)
+        })
+
+
+
+
 
 
 
