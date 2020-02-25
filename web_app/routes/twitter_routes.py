@@ -36,10 +36,22 @@ def get_user(screen_name=None):
 
     #breakpoint()
 
-    # todo: store user info in the database
-    #statuses = client.user_timeline(screen_name, tweet_mode="extended", count=50, exclude_replies=True, include_rts=False)
-    #for status in statuses:
-    #    print(status)
-    #    print("----")
+    statuses = twitter_api_client.user_timeline(screen_name, tweet_mode="extended", count=50, exclude_replies=True, include_rts=False)
+    #db_tweets = []
+    for status in statuses:
+        print(status.full_text)
+        print("----")
+        #print(dir(status))
 
-    return render_template("user.html", user=db_user)
+        # Find or create database tweet:
+        db_tweet = Tweet.query.get(status.id) or Tweet(id=status.id)
+        db_tweet.user_id = status.author.id # or db_user.id
+        db_tweet.full_text = status.full_text
+        #embedding = basilica_client.embed_sentence(status.full_text, model="twitter") # todo: prefer to make a single request to basilica with all the tweet texts, instead of a request per tweet
+        #print(len(embedding))
+        #db_tweet.embedding = embedding
+        db.session.add(db_tweet)
+        #db_tweets.append(db_tweet)
+    db.session.commit()
+
+    return render_template("user.html", user=db_user, tweets=statuses) # tweets=db_tweets
