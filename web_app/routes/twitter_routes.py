@@ -23,35 +23,41 @@ def list_users():
 @twitter_routes.route("/users/<screen_name>")
 def get_user(screen_name=None):
     print(screen_name)
-    twitter_user = twitter_api_client.get_user(screen_name)
 
-    # find or create database user:
-    db_user = User.query.get(twitter_user.id) or User(id=twitter_user.id)
-    db_user.screen_name = twitter_user.screen_name
-    db_user.name = twitter_user.name
-    db_user.location = twitter_user.location
-    db_user.followers_count = twitter_user.followers_count
-    db.session.add(db_user)
-    db.session.commit()
+    try:
 
-    #breakpoint()
+        twitter_user = twitter_api_client.get_user(screen_name)
 
-    statuses = twitter_api_client.user_timeline(screen_name, tweet_mode="extended", count=50, exclude_replies=True, include_rts=False)
-    #db_tweets = []
-    for status in statuses:
-        print(status.full_text)
-        print("----")
-        #print(dir(status))
+        # find or create database user:
+        db_user = User.query.get(twitter_user.id) or User(id=twitter_user.id)
+        db_user.screen_name = twitter_user.screen_name
+        db_user.name = twitter_user.name
+        db_user.location = twitter_user.location
+        db_user.followers_count = twitter_user.followers_count
+        db.session.add(db_user)
+        db.session.commit()
 
-        # Find or create database tweet:
-        db_tweet = Tweet.query.get(status.id) or Tweet(id=status.id)
-        db_tweet.user_id = status.author.id # or db_user.id
-        db_tweet.full_text = status.full_text
-        #embedding = basilica_client.embed_sentence(status.full_text, model="twitter") # todo: prefer to make a single request to basilica with all the tweet texts, instead of a request per tweet
-        #print(len(embedding))
-        #db_tweet.embedding = embedding
-        db.session.add(db_tweet)
-        #db_tweets.append(db_tweet)
-    db.session.commit()
+        #breakpoint()
 
-    return render_template("user.html", user=db_user, tweets=statuses) # tweets=db_tweets
+        statuses = twitter_api_client.user_timeline(screen_name, tweet_mode="extended", count=50, exclude_replies=True, include_rts=False)
+        #db_tweets = []
+        for status in statuses:
+            print(status.full_text)
+            print("----")
+            #print(dir(status))
+
+            # Find or create database tweet:
+            db_tweet = Tweet.query.get(status.id) or Tweet(id=status.id)
+            db_tweet.user_id = status.author.id # or db_user.id
+            db_tweet.full_text = status.full_text
+            #embedding = basilica_client.embed_sentence(status.full_text, model="twitter") # todo: prefer to make a single request to basilica with all the tweet texts, instead of a request per tweet
+            #print(len(embedding))
+            #db_tweet.embedding = embedding
+            db.session.add(db_tweet)
+            #db_tweets.append(db_tweet)
+        db.session.commit()
+
+        return render_template("user.html", user=db_user, tweets=statuses) # tweets=db_tweets
+
+    except:
+        return jsonify({"message": "OOPS User Not Found!"})
