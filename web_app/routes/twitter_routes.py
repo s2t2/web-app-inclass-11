@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, jsonify
 
 from web_app.models import db, User, Tweet
 from web_app.twitter_service import twitter_api
@@ -6,6 +6,19 @@ from web_app.twitter_service import twitter_api
 twitter_api_client = twitter_api()
 
 twitter_routes = Blueprint("twitter_routes", __name__)
+
+@twitter_routes.route("/users")
+@twitter_routes.route("/users.json")
+def list_users():
+    users=[]
+    user_records = User.query.all()
+    for user in user_records:
+        print(user)
+        d = user.__dict__
+        del d["_sa_instance_state"]
+        users.append(d)
+    return jsonify(users)
+
 
 @twitter_routes.route("/users/<screen_name>")
 def get_user(screen_name=None):
