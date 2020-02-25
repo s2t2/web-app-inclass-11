@@ -18,10 +18,22 @@ api = tweepy.API(auth)
 print("API", api)
 #print(dir(api))
 
-public_tweets = api.home_timeline()
+user = api.get_user("Chrisalbon")
+print("USER", user)
+print(user.screen_name)
+print(user.name)
+print(user.followers_count)
 
-for tweet in public_tweets:
-    print(type(tweet)) #> <class 'tweepy.models.Status'>
-    #print(dir(tweet))
-    print(tweet.text)
-    print("-------------")
+#breakpoint()
+
+
+
+
+
+#public_tweets = api.home_timeline()
+#
+#for tweet in public_tweets:
+#    print(type(tweet)) #> <class 'tweepy.models.Status'>
+#    #print(dir(tweet))
+#    print(tweet.text)
+#    print("-------------")
