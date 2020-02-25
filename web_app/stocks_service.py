@@ -3,8 +3,14 @@
 
 import requests
 import json
+import os
+from dotenv import load_dotenv
 
-request_url = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=TSLA&apikey=abc123"
+load_dotenv()
+
+API_KEY = os.getenv("ALPHAVANTAGE_API_KEY")
+
+request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=TSLA&apikey={API_KEY}"
 print(request_url)
 
 response = requests.get(request_url)
