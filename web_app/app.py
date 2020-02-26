@@ -1,34 +1,27 @@
 
 # app.py
 
+import os
 from flask import Flask, jsonify, render_template, request
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
 
 from web_app.models import db, migrate
 from web_app.routes.home_routes import home_routes
 from web_app.routes.book_routes import book_routes
 from web_app.routes.twitter_routes import twitter_routes
 
-SECRET_KEY = "TODO: super secret"
+SECRET_KEY = os.getenv("SECRET_KEY", default="super secret")
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 def create_app():
-
     app = Flask(__name__)
 
-    #
-    # configuring the database
-    #
-    #app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///web_app_11.db"
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////Users/mjr/Desktop/web-app-inclass-11/web_app_12.db"
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["SECRET_KEY"] = SECRET_KEY # allows us to use flash messaging
+    app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
     db.init_app(app)
     migrate.init_app(app, db)
 
-    #
-    # registering routes:
-    #
     app.register_blueprint(home_routes)
     app.register_blueprint(book_routes)
     app.register_blueprint(twitter_routes)
