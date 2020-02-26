@@ -1,5 +1,5 @@
 
-from flask import Blueprint
+from flask import Blueprint, request, jsonify
 
 from sklearn.datasets import load_iris
 from sklearn.linear_model import LogisticRegression
@@ -17,3 +17,9 @@ def iris():
 
     result = classifier.predict(X[:2, :])
     return str(result)
+
+@stats_routes.route("/predict", methods=["POST"])
+def predict():
+    print("PREDICTING...")
+    print("FORM DATA:", dict(request.form))
+    return jsonify({"message": "RESULTS (TODO)"})
