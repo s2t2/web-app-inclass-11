@@ -33,14 +33,31 @@ def predict():
     # todo: wrap in a try block in case the user's don't exist in the database
     user_a = User.query.filter(User.screen_name == screen_name_a).one()
     user_b = User.query.filter(User.screen_name == screen_name_b).one()
-
     user_a_tweets = user_a.tweets
     user_b_tweets = user_b.tweets
+    #user_a_embeddings = [tweet.embedding for tweet in user_a_tweets]
+    #user_b_embeddings = [tweet.embedding for tweet in user_b_tweets]
 
-    user_a_embeddings = [tweet.embedding for tweet in user_a_tweets]
-    user_b_embeddings = [tweet.embedding for tweet in user_b_tweets]
+    embeddings = []
+    labels = []
+    for tweet in user_a_tweets:
+        labels.append(user_a.screen_name)
+        embeddings.append(tweet.embedding)
 
+    for tweet in user_b_tweets:
+        labels.append(user_b.screen_name)
+        embeddings.append(tweet.embedding)
 
     print("TRAINING THE MODEL...")
+    #embeddings = []
+    #labels = []
+    classifier = LogisticRegression()
+    classifier.fit(embeddings, labels)
+
+    breakpoint()
+
+    result_a = classifier.predict([user_a_tweets[0].embedding])
+    result_b = classifier.predict([user_b_tweets[0].embedding])
+
 
     return jsonify({"message": "RESULTS (TODO)"})
