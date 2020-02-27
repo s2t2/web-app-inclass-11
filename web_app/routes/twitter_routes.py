@@ -22,6 +22,7 @@ def get_user(screen_name=None):
     try:
 
         twitter_user = twitter_api_client.get_user(screen_name)
+
         # find or create database user:
         db_user = User.query.get(twitter_user.id) or User(id=twitter_user.id)
         db_user.screen_name = twitter_user.screen_name
@@ -51,5 +52,6 @@ def get_user(screen_name=None):
 
         return render_template("user.html", user=db_user, tweets=statuses) # tweets=db_tweets
 
-    except:
-        return jsonify({"message": "OOPS User Not Found!"})
+    except Exception as e:
+        print(e)
+        return jsonify({"message": "OOPS Something went wrong", "details": str(e)})
